@@ -17,7 +17,7 @@ plugins {
 
 subprojects {
     tasks.withType<Javadoc> {
-        enabled = false
+        isEnabled = false
     }
 }
 
