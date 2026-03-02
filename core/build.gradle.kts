@@ -1,0 +1,91 @@
+plugins {
+    id("com.android.library")
+}
+
+android {
+    compileSdk = 33
+    defaultConfig {
+        minSdk = 19
+        targetSdk = 33
+        consumerProguardFiles("proguard-consumer-rules.pro")
+        buildConfigField("String", "VERSION_NAME", "\"${project.property("VERSION_NAME")}\"")
+        buildConfigField("String", "VERSION_CODE", "\"${project.property("VERSION_CODE")}\"")
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildFeatures {
+        buildConfig = true
+    }
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-consumer-rules.pro")
+        }
+    }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+        unitTests.all {
+            it.systemProperty("robolectric.invokedynamic.enable", "false")
+        }
+        unitTests.isReturnDefaultValues = true
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    namespace = "com.rudderstack.android.sdk.core"
+}
+
+dependencies {
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
+
+    implementation("com.google.code.gson:gson:2.8.6")
+    implementation("androidx.annotation:annotation:1.6.0")
+
+    implementation("com.rudderstack.android.sdk:rudderreporter:0.6.0")
+    implementation("com.rudderstack.kotlin.sdk:gsonrudderadapter:0.2.0")
+
+    // required for new life cycle methods
+    compileOnly("androidx.lifecycle:lifecycle-process:2.6.1")
+    compileOnly("androidx.lifecycle:lifecycle-common:2.6.1")
+
+    //sql-cipher
+    compileOnly("net.zetetic:sqlcipher-android:4.5.6@aar")
+    compileOnly("androidx.sqlite:sqlite:2.4.0")
+
+    //test
+    testImplementation("com.android.support.test:rules:1.0.2")
+    testImplementation("com.android.support.test:runner:1.0.2")
+    testImplementation("org.robolectric:robolectric:4.10.3")
+    testImplementation("androidx.test:core-ktx:1.5.0")
+    testImplementation("org.hamcrest:hamcrest:2.2")
+    testImplementation("org.mockito:mockito-core:3.11.2")
+    testImplementation("androidx.lifecycle:lifecycle-process:2.6.1")
+    testImplementation("androidx.lifecycle:lifecycle-common:2.6.1")
+
+    testImplementation("org.powermock:powermock-core:2.0.9")
+    testImplementation("org.powermock:powermock-module-junit4:2.0.9") {
+        exclude(group = "org.hamcrest", module = "hamcrest")
+    }
+    testImplementation("org.skyscreamer:jsonassert:1.5.1")
+
+    testImplementation("org.powermock:powermock-api-mockito2:2.0.9")
+    testImplementation("org.awaitility:awaitility:4.2.0")
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    compileOnly("androidx.work:work-runtime:2.7.1")
+}
+
+repositories {
+    google()
+}
+
+tasks.withType<JavaExec> {
+    jvmArgs("--add-opens", "java.base/jdk.internal.loader=ALL-UNNAMED")
+}
+
+//apply(from = "${rootProject.projectDir}/scripts/publish-module.gradle.kts")
+
+apply(from = rootProject.file("gradle/mvn-publish.gradle.kts"))
+apply(from = rootProject.file("gradle/codecov.gradle.kts"))
