@@ -1,0 +1,42 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://appboy.github.io/appboy-android-sdk/sdk") }
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:7.4.2")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.10")
+        classpath("com.google.gms:google-services:4.3.10")
+    }
+}
+
+plugins {
+    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+}
+
+subprojects {
+    tasks.withType<Javadoc> {
+        isEnabled = false
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://appboy.github.io/appboy-android-sdk/sdk") }
+        maven {
+            url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+        }
+    }
+}
+
+tasks.register<Delete>("clean") {
+    delete(rootProject.buildDir)
+}
+
+//apply(from = "${rootDir}/scripts/publish-root.gradle.kts")
+
+apply(from = rootProject.file("gradle/promote.gradle.kts"))
+apply(from = rootProject.file("gradle/codecov.gradle.kts"))
