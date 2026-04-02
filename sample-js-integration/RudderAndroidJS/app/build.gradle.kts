@@ -35,7 +35,7 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
     implementation("com.rudderstack.android.sdk:core:1+")
-    // add the follwing line if you don't have Gson included already
+    // add the following line if you don't have Gson included already
     implementation("com.google.code.gson:gson:2+")
 }
 repositories {
